@@ -1,0 +1,28 @@
+{
+  "root": "apps/discover-coffee-stores-e2e",
+  "sourceRoot": "apps/discover-coffee-stores-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/discover-coffee-stores-e2e/cypress.json",
+        "devServerTarget": "discover-coffee-stores:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "discover-coffee-stores:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/discover-coffee-stores-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["discover-coffee-stores"]
+}

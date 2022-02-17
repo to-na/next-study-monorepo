@@ -1,0 +1,54 @@
+{
+  "root": "apps/discover-coffee-stores",
+  "sourceRoot": "apps/discover-coffee-stores",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/discover-coffee-stores",
+        "outputPath": "dist/apps/discover-coffee-stores"
+      },
+      "configurations": {
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/next:server",
+      "options": {
+        "buildTarget": "discover-coffee-stores:build",
+        "dev": true
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "discover-coffee-stores:build:production",
+          "dev": false
+        }
+      }
+    },
+    "export": {
+      "executor": "@nrwl/next:export",
+      "options": {
+        "buildTarget": "discover-coffee-stores:build:production"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/discover-coffee-stores"],
+      "options": {
+        "jestConfig": "apps/discover-coffee-stores/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/discover-coffee-stores/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": []
+}
