@@ -1,5 +1,5 @@
-import './banner.module.scss';
-import styles from './banner.module.scss';
+import './Banner.module.scss';
+import styles from './Banner.module.scss';
 /* eslint-disable-next-line */
 export interface BannerProps {
   buttonText: string;
@@ -14,9 +14,11 @@ const Banner = (props: BannerProps) => {
         <span className={styles.title2}>Connoisseur</span>
       </h1>
       <p className={styles.subTitle}>Discover your local coffee shops!</p>
-      <button className={styles.button} onClick={props.handleOnClick}>
-        {props.buttonText}
-      </button>
+      <div className={styles.buttonWrapper}>
+        <button className={styles.button} onClick={props.handleOnClick}>
+          {props.buttonText}
+        </button>
+      </div>
     </div>
   );
 };
