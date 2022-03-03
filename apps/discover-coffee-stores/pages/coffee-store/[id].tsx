@@ -1,3 +1,4 @@
+import { useContext, useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,13 +9,17 @@ import styles from './coffee-store.module.scss';
 
 import { fetchCoffeeStores } from '../../lib/coffeeStores';
 
+import { StoreContext } from '../../store/storeContext';
+import { isEmpty } from '../../utils';
+
 export async function getStaticProps({ params }) {
   const coffeeStores = await fetchCoffeeStores();
+  const findCoffeeStoreById = coffeeStores.find(
+    (coffeeStore) => coffeeStore.fsq_id === params.id
+  );
   return {
     props: {
-      coffeeStore: coffeeStores.find((coffeeStore) => {
-        return coffeeStore.fsq_id.toString() === params.id;
-      }),
+      coffeeStore: findCoffeeStoreById || {},
     },
   };
 }
@@ -38,13 +43,31 @@ export interface CoffeeStoreProps {
   coffeeStore: any;
 }
 
-export function CoffeeStore(props: CoffeeStoreProps) {
+export function CoffeeStore(initialProps: CoffeeStoreProps) {
+  const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore);
   const router = useRouter();
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
+  // if (router.isFallback) {
+  //   return <div>Loading...</div>;
+  // }
 
-  const { address, neighborhood, name, imgUrl } = props.coffeeStore;
+  const id = router.query.id;
+  const {
+    state: { coffeeStores },
+  } = useContext(StoreContext);
+  useEffect(() => {
+    console.log(isEmpty(initialProps.coffeeStore));
+    if (isEmpty(initialProps.coffeeStore)) {
+      if (coffeeStores.length > 0) {
+        const findCoffeeStoreById = coffeeStores.find(
+          (coffeeStore) => coffeeStore.fsq_id === id
+        );
+        console.log(findCoffeeStoreById);
+        setCoffeeStore(findCoffeeStoreById);
+      }
+    }
+  }, [coffeeStores, id, initialProps]);
+  console.log({ coffeeStore });
+  const { address, neighborhood, name, imgUrl } = coffeeStore;
 
   const handleUpVoteButton = () => {
     console.log('handleUpVoteButton');
