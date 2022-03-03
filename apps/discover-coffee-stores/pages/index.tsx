@@ -4,6 +4,8 @@ import Banner from '../components/Banner';
 import Card from '../components/Card';
 import styles from './index.module.scss';
 
+import useTrackLocation from '../hooks/useTrackLocation';
+
 import { fetchCoffeeStores } from '../lib/coffeeStores';
 
 export async function getStaticProps(context) {
@@ -16,8 +18,12 @@ export async function getStaticProps(context) {
 }
 export function Index(props) {
   console.log('props', props);
+  const { handleTrackLocation, latLong, locationErrorMsg, isFindingLocation } =
+    useTrackLocation();
+  console.log({ latLong, locationErrorMsg });
   const handleOnBannerClick = () => {
     console.log('hi banner button');
+    handleTrackLocation();
   };
   return (
     <div className={styles.container}>
@@ -27,14 +33,15 @@ export function Index(props) {
       </Head>
       <main className={styles.main}>
         <Banner
-          buttonText="View stores nearby"
+          buttonText={isFindingLocation ? 'Locating...' : 'View stores nearby'}
           handleOnClick={handleOnBannerClick}
         />
+        {locationErrorMsg && <p>Something went wrong</p>}
         <div className={styles.heroImage}>
           <Image src="/static/hero-image.png" width={700} height={400} alt="" />
         </div>
         {props.coffeeStores.length > 0 && (
-          <>
+          <div className={styles.sectionWrapper}>
             <h2 className={styles.heading2}>Toronto stores</h2>
             <div className={styles.cardLayout}>
               {props.coffeeStores.map((coffeeStore) => {
@@ -51,7 +58,7 @@ export function Index(props) {
                 );
               })}
             </div>
-          </>
+          </div>
         )}
       </main>
     </div>
