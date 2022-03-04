@@ -15,7 +15,7 @@ import { isEmpty } from '../../utils';
 export async function getStaticProps({ params }) {
   const coffeeStores = await fetchCoffeeStores();
   const findCoffeeStoreById = coffeeStores.find(
-    (coffeeStore) => coffeeStore.fsq_id === params.id
+    (coffeeStore) => coffeeStore.id === params.id
   );
   return {
     props: {
@@ -29,7 +29,7 @@ export async function getStaticPaths() {
   const paths = coffeeStores.map((coffeeStore) => {
     return {
       params: {
-        id: coffeeStore.fsq_id.toString(),
+        id: coffeeStore.id.toString(),
       },
     };
   });
@@ -44,7 +44,9 @@ export interface CoffeeStoreProps {
 }
 
 export function CoffeeStore(initialProps: CoffeeStoreProps) {
-  const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore);
+  const [coffeeStore, setCoffeeStore] = useState(
+    initialProps.coffeeStore || {}
+  );
   const router = useRouter();
   // if (router.isFallback) {
   //   return <div>Loading...</div>;
@@ -53,21 +55,50 @@ export function CoffeeStore(initialProps: CoffeeStoreProps) {
   const id = router.query.id;
   const {
     state: { coffeeStores },
-  } = useContext(StoreContext);
+  }: any = useContext(StoreContext);
+
+  const handleCreateCoffeeStore = async (coffeeStore) => {
+    try {
+      const { id, name, voting, imgUrl, neighbourhood, address } = coffeeStore;
+
+      const response = await fetch('/api/createCoffeeStore', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id,
+          name,
+          voting: voting || 0,
+          imgUrl,
+          neighbourhood: neighbourhood || '',
+          address: address || '',
+        }),
+      });
+      const dbCoffeeStore = await response.json();
+      console.log({ dbCoffeeStore });
+    } catch (error) {
+      console.error({ error });
+    }
+  };
   useEffect(() => {
-    console.log(isEmpty(initialProps.coffeeStore));
     if (isEmpty(initialProps.coffeeStore)) {
       if (coffeeStores.length > 0) {
-        const findCoffeeStoreById = coffeeStores.find(
-          (coffeeStore) => coffeeStore.fsq_id === id
+        const coffeeStoreFromContext = coffeeStores.find(
+          (coffeeStore) => coffeeStore.id === id
         );
-        console.log(findCoffeeStoreById);
-        setCoffeeStore(findCoffeeStoreById);
+        if (coffeeStoreFromContext) {
+          setCoffeeStore(coffeeStoreFromContext);
+          handleCreateCoffeeStore(coffeeStoreFromContext);
+        }
       }
+    } else {
+      // SSG
+      setCoffeeStore(initialProps.coffeeStore);
+      handleCreateCoffeeStore(initialProps.coffeeStore);
     }
-  }, [coffeeStores, id, initialProps]);
-  console.log({ coffeeStore });
-  const { address, neighborhood, name, imgUrl } = coffeeStore;
+  }, [coffeeStores, id, initialProps, initialProps.coffeeStore]);
+  const { address, neighbourhood, name, imgUrl } = coffeeStore;
 
   const handleUpVoteButton = () => {
     console.log('handleUpVoteButton');
@@ -106,7 +137,7 @@ export function CoffeeStore(initialProps: CoffeeStoreProps) {
             />
             <p className={styles.text}>{address}</p>
           </div>
-          {neighborhood && (
+          {neighbourhood && (
             <div className={styles.iconWrapper}>
               <Image
                 src="/static/icons/nearMe.svg"
@@ -114,7 +145,7 @@ export function CoffeeStore(initialProps: CoffeeStoreProps) {
                 height={24}
                 alt=""
               />
-              <p className={styles.text}>{neighborhood}</p>
+              <p className={styles.text}>{neighbourhood}</p>
             </div>
           )}
           <div className={styles.iconWrapper}>

@@ -17,8 +17,10 @@ const getListOfCoffeeStorePhotos = async () => {
   const unsplashResults = photos.response.results;
   return unsplashResults.map((result) => result.urls.small);
 };
+
+// TODO: set latLong
 export const fetchCoffeeStores = async (
-  latLong = '35.658189238897656,139.70171704270476',
+  latLong = '35.693831,139.7624351',
   limit = 6
 ) => {
   const photos = await getListOfCoffeeStorePhotos();
@@ -29,16 +31,17 @@ export const fetchCoffeeStores = async (
     },
   });
   const data = await response.json();
-  console.log(data);
-  return data.results.map((result, idx) => {
-    return {
-      // ...result,
-      fsq_id: result.fsq_id,
-      address: result.location.address || '',
-      name: result.name,
-      neighborhood:
-        result.location.neighborhood || result.location.cross_street,
-      imgUrl: photos[idx],
-    };
-  });
+  return (
+    data.results.map((result, idx) => {
+      return {
+        // ...result,
+        id: result.fsq_id,
+        address: result.location.address || '',
+        name: result.name,
+        neighbourhood:
+          result.location.neighborhood || result.location.cross_street || '',
+        imgUrl: photos[idx],
+      };
+    }) || []
+  );
 };

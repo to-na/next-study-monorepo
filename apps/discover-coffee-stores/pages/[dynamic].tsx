@@ -6,7 +6,6 @@ export interface NextjsProps {}
 
 export function Nextjs(props: NextjsProps) {
   const router = useRouter();
-  console.log(router);
   return (
     <>
       <Head>
