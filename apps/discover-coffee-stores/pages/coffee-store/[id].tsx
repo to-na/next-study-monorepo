@@ -4,13 +4,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
+import useSWR from 'swr';
 import cls from 'classnames';
 import styles from './coffee-store.module.scss';
 
 import { fetchCoffeeStores } from '../../lib/coffeeStores';
 
 import { StoreContext } from '../../store/storeContext';
-import { isEmpty } from '../../utils';
+import { fetcher, isEmpty } from '../../utils';
 
 export async function getStaticProps({ params }) {
   const coffeeStores = await fetchCoffeeStores();
@@ -48,10 +49,6 @@ export function CoffeeStore(initialProps: CoffeeStoreProps) {
     initialProps.coffeeStore || {}
   );
   const router = useRouter();
-  // if (router.isFallback) {
-  //   return <div>Loading...</div>;
-  // }
-
   const id = router.query.id;
   const {
     state: { coffeeStores },
@@ -75,8 +72,6 @@ export function CoffeeStore(initialProps: CoffeeStoreProps) {
           address: address || '',
         }),
       });
-      const dbCoffeeStore = await response.json();
-      console.log({ dbCoffeeStore });
     } catch (error) {
       console.error({ error });
     }
@@ -100,9 +95,37 @@ export function CoffeeStore(initialProps: CoffeeStoreProps) {
   }, [coffeeStores, id, initialProps, initialProps.coffeeStore]);
   const { address, neighbourhood, name, imgUrl } = coffeeStore;
 
-  const handleUpVoteButton = () => {
-    console.log('handleUpVoteButton');
+  const [votingCount, setVotingCount] = useState(0);
+  const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher);
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setCoffeeStore(data[0]);
+      setVotingCount(data[0].voting);
+    }
+  }, [data]);
+  const handleUpvoteButton = async () => {
+    try {
+      const response = await fetch('/api/favoriteCoffeeStoreById', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id,
+        }),
+      });
+      const dbCoffeeStore = await response.json();
+      if (dbCoffeeStore && dbCoffeeStore.length) {
+        setVotingCount(votingCount + 1);
+      }
+    } catch (error) {
+      console.error({ error });
+    }
   };
+  if (error) {
+    return <div>Something wrong</div>;
+  }
   return (
     <div className={styles.layout}>
       <Head>
@@ -150,10 +173,10 @@ export function CoffeeStore(initialProps: CoffeeStoreProps) {
           )}
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/star.svg" width={24} height={24} alt="" />
-            <p className={styles.text}>1</p>
+            <p className={styles.text}>{votingCount}</p>
           </div>
 
-          <button className={styles.upvoteButton} onClick={handleUpVoteButton}>
+          <button className={styles.upvoteButton} onClick={handleUpvoteButton}>
             Up vote!
           </button>
         </div>

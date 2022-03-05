@@ -34,7 +34,6 @@ export const fetchCoffeeStores = async (
   return (
     data.results.map((result, idx) => {
       return {
-        // ...result,
         id: result.fsq_id,
         address: result.location.address || '',
         name: result.name,

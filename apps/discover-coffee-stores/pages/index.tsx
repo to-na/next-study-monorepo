@@ -21,7 +21,6 @@ export async function getStaticProps(context) {
 export function Index(props) {
   const { handleTrackLocation, locationErrorMsg, isFindingLocation } =
     useTrackLocation();
-  // const [coffeeStores, setCoffeeStores] = useState([]);
   const [coffeeStoresError, setCoffeeStoresError] = useState('');
   const { dispatch, state }: any = useContext(StoreContext);
   const { coffeeStores, latLong } = state;
@@ -40,7 +39,6 @@ export function Index(props) {
               coffeeStores,
             },
           });
-          // setCoffeeStores(fetchedCoffeeStores);
         } catch (error) {
           console.error({ error });
           setCoffeeStoresError(error.message);
