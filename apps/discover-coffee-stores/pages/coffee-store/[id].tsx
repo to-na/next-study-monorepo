@@ -146,7 +146,7 @@ export function CoffeeStore(initialProps: CoffeeStoreProps) {
               width={600}
               height={360}
               className={styles.storeImg}
-              alt={name}
+              alt="banner image"
             />
           </div>
         </div>

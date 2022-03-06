@@ -63,7 +63,12 @@ export function Index(props) {
         {locationErrorMsg && <p>Something went wrong: {locationErrorMsg}</p>}
         {coffeeStoresError && <p>Something went wrong: {coffeeStoresError}</p>}
         <div className={styles.heroImage}>
-          <Image src="/static/hero-image.png" width={700} height={400} alt="" />
+          <Image
+            src="/static/hero-image.png"
+            width={700}
+            height={400}
+            alt="Hero Image"
+          />
         </div>
         {coffeeStores.length > 0 && (
           <div className={styles.sectionWrapper}>
