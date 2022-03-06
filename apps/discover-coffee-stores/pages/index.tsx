@@ -54,6 +54,10 @@ export function Index(props) {
       <Head>
         <title>Coffee Connoisseur</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="description"
+          content="Find the best coffee shops in your area"
+        />
       </Head>
       <main className={styles.main}>
         <Banner
