@@ -2,6 +2,8 @@
   "version": 2,
   "projects": {
     "discover-coffee-stores": "apps/discover-coffee-stores",
-    "discover-coffee-stores-e2e": "apps/discover-coffee-stores-e2e"
+    "discover-coffee-stores-e2e": "apps/discover-coffee-stores-e2e",
+    "discover-videos": "apps/discover-videos",
+    "discover-videos-e2e": "apps/discover-videos-e2e"
   }
 }
