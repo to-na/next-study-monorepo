@@ -5,7 +5,7 @@ const useTrackLocation = () => {
   const [locationErrorMsg, setLocationErrorMsg] = useState('');
   const [isFindingLocation, setIsFindingLocation] = useState(false);
 
-  const { dispatch } = useContext(StoreContext);
+  const { dispatch }: any = useContext(StoreContext);
   const success = (position) => {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
