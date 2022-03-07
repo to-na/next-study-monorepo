@@ -52,7 +52,7 @@ export function Index(props) {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Deploy Coffee Connoisseur</title>
+        <title>Coffee Connoisseur</title>
         <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"
